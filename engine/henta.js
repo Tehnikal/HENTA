@@ -24,21 +24,11 @@ exports.startEngine = function (){
 }
 
 // Глобальные функции
-global.typeOf = function (value) {
-    var s = typeof value;
-    if (s === 'object') {
-        if (value) {
-            if (Object.prototype.toString.call(value) == '[object Array]') {
-                s = 'array';
-            }
-        } else {
-            s = 'null';
-        }
-    }
-    return s;
+function typeOf (value) {
+    return Array.isArray(value) ? "array" : typeof value;
 }
 
-global.checkTypes = function (argList, typeList) {
+function checkTypes(argList, typeList) {
     for (var i = 0; i < typeList.length; i++) {
         if (typeOf(argList[i]) !== typeList[i]) {
             throw 'wrong type: expecting ' + typeList[i] + ", found " + typeOf(argList[i]);
