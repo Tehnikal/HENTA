@@ -1,0 +1,18 @@
+{
+  "name": "henta",
+  "version": "1.0.0",
+  "description": "bot engine",
+  "main": "start.js",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "node-fetch": "^2.3.0",
+    "readline": "^1.3.0",
+    "vk-io": "^4.0.0-rc.15"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
