@@ -2,10 +2,7 @@ const cmdline = require('./cmdline');
 const logger = require('./logger');
 
 class Cvar {
-  constructor(options) {
-      Object.assign(this, options);
-      cvar_list[options.tag] = this
-  }
+  constructor(options) { Object.assign(this, options); }
 
   setCallback(callback) {
       this.callback = callback;
@@ -25,41 +22,57 @@ class Cvar {
 
 let cvar_list = {}
 
-exports.create = function(tag, description, value) {
-    return new Cvar({ tag, description, value })
+exports.create = function(options) {
+    let cvar = new Cvar(options);
+    cvar_list[options.tag] = cvar;
+    return cvar
 }
 
 exports.get = function(tag) {
     return cvar_list[tag];
 }
 
-cmdline.addCommand("cvars", "вывести список кваров", () => {
-    logger.log(`Список доступных кваров:`);
-    for (let key in cvar_list) {
-        let cvar = cvar_list[key]
-        logger.log(`● ${cvar.tag} - ${cvar.description};`);
+cmdline.addCommand({
+    tag: "cvars",
+    description: "вывести список кваров",
+    handler: () => {
+        logger.log(`Список доступных кваров:`);
+        for (let [key, cvar] in cvar_list)
+            logger.log(`● ${cvar.tag} - ${cvar.description};`);
     }
 });
 
-cmdline.addCommand("getcvar <имя>", "вывести значение квара", (args) => {
-    let cvar = exports.get(args[1])
-    if (!cvar) {
-        logger.log(`Квар '${args[1]}' не найден.`);
-        logger.log(`Введите 'cvars' для просмотра списка кваров.`);
-        return;
+cmdline.addCommand({
+    tag: "getcvar",
+    usage: "<имя>",
+    typeList: ['string'],
+    description: "вывести значение квара",
+    handler: args => {
+        let cvar = exports.get(args[1])
+        if (!cvar) {
+            logger.log(`Квар '${args[1]}' не найден.`);
+            logger.log(`Введите 'cvars' для просмотра списка кваров.`);
+            return;
+        }
+
+        logger.log(`${cvar.tag} = ${cvar}`);
     }
+});
 
-    logger.log(`${cvar.tag} = ${cvar}`);
-}, ['string']);
+cmdline.addCommand({
+    tag: "setcvar",
+    usage: "<имя> <значение>",
+    typeList: ['string', 'string'],
+    description: "установить значение квара",
+    handler: (args) => {
+        let cvar = exports.get(args[1])
+        if (!cvar) {
+            logger.log(`Квар '${args[1]}' не найден.`);
+            logger.log(`Введите 'cvars' для просмотра списка кваров.`);
+            return;
+        }
 
-cmdline.addCommand("setcvar <имя> <значение>", "установить значение квара", (args) => {
-    let cvar = exports.get(args[1])
-    if (!cvar) {
-        logger.log(`Квар '${args[1]}' не найден.`);
-        logger.log(`Введите 'cvars' для просмотра списка кваров.`);
-        return;
+        cvar.setValue(args[2]);
+        logger.log(`${cvar.tag} = ${cvar}`);
     }
-
-    cvar.setValue(args[2]);
-    logger.log(`${cvar.tag} = ${cvar}`);
-}, ['string']);
+});

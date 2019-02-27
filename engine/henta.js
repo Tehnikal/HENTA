@@ -23,16 +23,4 @@ exports.startEngine = function (){
     vkLongpoll.run().catch(console.error);
 }
 
-// Глобальные функции
-function typeOf (value) {
-    return Array.isArray(value) ? "array" : typeof value;
-}
-
-function checkTypes(argList, typeList) {
-    for (var i = 0; i < typeList.length; i++) {
-        if (typeOf(argList[i]) !== typeList[i]) {
-            throw 'wrong type: expecting ' + typeList[i] + ", found " + typeOf(argList[i]);
-        }
-    }
-}
 // Велодорожка =======================================================================

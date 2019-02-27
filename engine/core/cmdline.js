@@ -6,7 +6,6 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 class Command {
   constructor(options) {
       Object.assign(this, options);
-      commands[options.tag] = this
   }
 }
 
@@ -19,15 +18,17 @@ rl.on('line', (input) => {
     let command = commands[args[0]];
     if (command) {
         if (command.typeList && exports.checkTypes(command, args)) return;
-        return command.func(args);
+        return command.handler(args);
     }
 
     logger.log(`Команда '${args[0]}' не найдена.`);
     logger.log(`Введите 'help' для просмотра списка команд.`);
 });
 
-exports.addCommand = function(tag, description, func, typeList) {
-    return new Command({ tag: tag.split(' ')[0], description, func, usage: tag.split(' ').splice(1).join(' '), typeList })
+exports.addCommand = function(options) {
+    let command = new Command(options);
+    commands[options.tag] = command;
+    return command;
 }
 
 exports.checkTypes = function (command, argList) {
@@ -40,10 +41,12 @@ exports.checkTypes = function (command, argList) {
 }
 
 // Стандартные команды
-exports.addCommand("help", "вывести список команд", () => {
-    logger.log(`Список доступных команд:`);
-    for (let key in commands) {
-        let cmd = commands[key]
-        logger.log(`● ${cmd.tag}${cmd.usage && ' '+cmd.usage || ''} - ${cmd.description};`);
+exports.addCommand({
+    tag: "help",
+    description: "вывести список команд",
+    handler: () => {
+        logger.log(`Список доступных команд:`);
+        for (let [key, cmd] in commands)
+            logger.log(`● ${cmd.tag}${cmd.usage && ' '+cmd.usage || ''} - ${cmd.description};`);
     }
 });
