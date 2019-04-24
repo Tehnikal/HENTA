@@ -1,0 +1,35 @@
+#включить h> > 
+#включить h> > 
+#ifdef _ _ APPLE__
+#включить h> > 
+#включить h> > 
+#else 
+#include H>> 
+#endif 
+
+int  main (void ) 
+{ 
+    int pid =  fork (); 
+    if  (0  == pid ) 
+    { 
+        /* son process */ 
+
+        SCARDCONTEXT hkontext ; 
+        DWORD err =  SCardEstablishContext (SCARD_SCOPE_SYSTEM, NULL, NULL, 
+            & hkontext ); 
+        if  ( err != SCARD_S_SUCCESS) {
+            функции printf("ScardEstablishedContext: %с (значение 0x%08lx)\Н",
+                pcsc_stringify_error(подстраховаться), (длинный)подстраховались);
+            возврат -1;
+        }
+        еще
+            с printf("ОК\Н");
+
+        SCardReleaseContext(hContext);
+    }
+    остальное
+        /* даем некоторое время сын */
+        сон(1);
+
+    возврат 0;
+}
